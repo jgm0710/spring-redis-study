@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.ValueOperations
 import org.springframework.stereotype.Repository
+import java.time.Duration
 
 @Repository
 class PhoneAuthRepositoryRedisImpl(
@@ -16,7 +17,7 @@ class PhoneAuthRepositoryRedisImpl(
     override fun save(phoneAuth: PhoneAuth): PhoneAuth {
         val opsForValue: ValueOperations<String, Any> = redisTemplate.opsForValue()
         val json: String = objectMapper.writeValueAsString(phoneAuth)
-        opsForValue.set(phoneAuth.phone, json)
+        opsForValue.set(phoneAuth.phone, json, Duration.ofSeconds(60 * 3))
         return  phoneAuth
     }
 }
