@@ -16,16 +16,16 @@ class PhoneAuthAplService(
 
     @Transactional
     fun sendAuthCode(command: SendAuthCodeCommand): PhoneAuth {
-        val existedPhoneAuth: PhoneAuth? = phoneAuthRepository.findByPhone(phone = command.phone)
+        val existPhoneAuth: PhoneAuth? = phoneAuthRepository.findByPhone(phone = command.phone)
 
         val newPhoneAuth: PhoneAuth =
-            if (existedPhoneAuth == null) {
+            if (existPhoneAuth == null) {
                 PhoneAuth.createPhoneAuth(command.phone)
             } else {
-                if (!existedPhoneAuth.isTooManyRequest()) {
+                if (!existPhoneAuth.isTooManyRequest()) {
                     throw PhoneAuthTooManyRequestException()
                 }
-                existedPhoneAuth.createNewPhoneAuth()
+                existPhoneAuth.createNewPhoneAuth()
             }
 
         messageSendService.sendPhoneMessage(newPhoneAuth.phone, newPhoneAuth.authCodeMessage)
