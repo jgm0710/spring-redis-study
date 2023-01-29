@@ -20,4 +20,9 @@ class PhoneAuthRepositoryRedisImpl(
         opsForValue.set(phoneAuth.phone, json, Duration.ofSeconds(60 * 3))
         return  phoneAuth
     }
+
+    override fun findByPhone(phone: String): PhoneAuth? {
+        val value: Any? = redisTemplate.opsForValue().get(phone)
+        return objectMapper.readValue(value.toString(), PhoneAuth::class.java)
+    }
 }
