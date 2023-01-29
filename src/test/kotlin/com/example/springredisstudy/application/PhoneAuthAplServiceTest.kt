@@ -1,6 +1,9 @@
 package com.example.springredisstudy.application
 
 import com.example.springredisstudy.application.command.SendAuthCodeCommand
+import com.example.springredisstudy.application.command.ValidateAuthCodeCommand
+import com.example.springredisstudy.domain.PhoneAuth
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,5 +22,22 @@ class PhoneAuthAplServiceTest @Autowired constructor(val phoneAuthAplService: Ph
 
         //then
         println("sendResult = ${sendResult}")
+    }
+
+    @Test
+    @DisplayName("sam")
+    fun sam() {
+        //given
+        val sendAuthCode: PhoneAuth = phoneAuthAplService.sendAuthCode(SendAuthCodeCommand("01012341234"))
+
+        val validateAuthCodeCommand = ValidateAuthCodeCommand(
+            sendAuthCode.phone,
+            sendAuthCode.authCode
+        )
+
+        //when
+
+        //then
+        assertDoesNotThrow { phoneAuthAplService.validateAuthCode(validateAuthCodeCommand) }
     }
 }

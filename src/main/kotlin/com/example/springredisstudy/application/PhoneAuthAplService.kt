@@ -1,9 +1,11 @@
 package com.example.springredisstudy.application
 
 import com.example.springredisstudy.application.command.SendAuthCodeCommand
+import com.example.springredisstudy.application.command.ValidateAuthCodeCommand
 import com.example.springredisstudy.domain.PhoneAuth
 import com.example.springredisstudy.domain.PhoneAuthRepository
 import com.example.springredisstudy.domain.exception.PhoneAuthTooManyRequestException
+import com.example.springredisstudy.domain.exception.PhoneAuthUnauthorizedException
 import com.example.springredisstudy.domain.message.MessageSendService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -31,5 +33,13 @@ class PhoneAuthAplService(
         messageSendService.sendPhoneMessage(newPhoneAuth.phone, newPhoneAuth.authCodeMessage)
 
         return phoneAuthRepository.save(newPhoneAuth)
+    }
+
+    @Transactional
+    fun validateAuthCode(command: ValidateAuthCodeCommand) {
+        val findPhoneAuth: PhoneAuth =
+            phoneAuthRepository.findByPhone(command.phone) ?: throw PhoneAuthUnauthorizedException()
+
+        findPhoneAuth.validateAuthCode(command.authCode)
     }
 }

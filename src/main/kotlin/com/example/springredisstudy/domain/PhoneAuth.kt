@@ -1,5 +1,6 @@
 package com.example.springredisstudy.domain
 
+import com.example.springredisstudy.domain.exception.PhoneAuthUnauthorizedException
 import java.util.concurrent.ThreadLocalRandom
 
 const val MAX_REQUEST_COUNT = 5
@@ -22,6 +23,12 @@ data class PhoneAuth(
 
     fun isTooManyRequest(): Boolean {
         return requestCount < MAX_REQUEST_COUNT
+    }
+
+    fun validateAuthCode(authCode: String) {
+        if (this.authCode != authCode) {
+            throw PhoneAuthUnauthorizedException()
+        }
     }
 
     companion object {
